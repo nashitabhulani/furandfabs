@@ -616,16 +616,16 @@ body { background: #e6e5e0; }
   box-shadow: 0 2px 6px rgba(0,0,0,0.02);
 }
 
-.option-btn.icon-option {
+.option-btn.img-option {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.btn-icon {
-  width: 20px;
-  height: 20px;
-  color: var(--teal-dark);
+.btn-custom-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 
