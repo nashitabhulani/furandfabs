@@ -4,7 +4,9 @@ import './App.css'
 import dogImage from '../assets/WhatsApp Image 2026-09-14 at 11.17.39 PM.jpeg'
 import catGroupImage from '../assets/WhatsApp Image 2026-09-14 at 11.17.40 PM.jpeg'
 import catImage from '../assets/WhatsApp Image 2026-09-14 at 11.18.17 PM.jpeg'
-import powderImage from '../assets/WhatsApp Image 2026-09-14 at 11.24.07 PM.jpeg'
+import powderImage from '../assets/WhatsApp Image 2026-09-14 at 11.24.07 PM.jpeg';
+import cocoImage from '../assets/coco.jpg';
+import mikoImage from '../assets/miko.jpg';
 
 const slides = [
   
@@ -33,7 +35,15 @@ function Icon({ name }) {
 }
 
 function App() {
-  const [page, setPage] = useState(() => window.location.hash === '#about' ? 'about' : 'shop')
+  const getPageFromHash = () => {
+    const hash = window.location.hash.replace('#', '')
+    if (['about', 'petfluencers', 'influencers', 'customise'].includes(hash)) {
+      return hash === 'influencers' ? 'petfluencers' : hash
+    }
+    return 'shop'
+  }
+
+  const [page, setPage] = useState(getPageFromHash)
   const [size, setSize] = useState('1 kg')
   const [quantity, setQuantity] = useState(1)
   const [cartCount, setCartCount] = useState(0)
@@ -42,10 +52,29 @@ function App() {
   const [activeSlide, setActiveSlide] = useState(0)
   const [email, setEmail] = useState('')
   const [joined, setJoined] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Petfluencers modal/detail state
+  const [selectedPet, setSelectedPet] = useState(null)
+
+  // Customise form state
+  const [customiseForm, setCustomiseForm] = useState({
+    petName: '',
+    petType: 'Dog',
+    breed: '',
+    issues: '',
+    ownerEmail: '',
+    phone: ''
+  })
+  const [customiseSubmitted, setCustomiseSubmitted] = useState(false)
 
   useEffect(() => {
     const timer = window.setInterval(() => setActiveSlide((slide) => (slide + 1) % slides.length), 5000)
-    const handleHashChange = () => setPage(window.location.hash === '#about' ? 'about' : 'shop')
+    const handleHashChange = () => {
+      setPage(getPageFromHash())
+      setMobileMenuOpen(false)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
     window.addEventListener('hashchange', handleHashChange)
     return () => {
       window.clearInterval(timer)
@@ -53,51 +82,283 @@ function App() {
     }
   }, [])
 
+  const handleCustomiseSubmit = (e) => {
+    e.preventDefault()
+    setCustomiseSubmitted(true)
+  }
+
   return (
     <main className="storefront">
-      <div className="offer-bar"><Icon name="paw" /> Limited Time Offer: Get 10% off on your first order! <Icon name="paw" /></div>
-      <header className="site-header">
-        <nav className="nav-links" aria-label="Main navigation"><a href="#shop">Shop</a><a href="#about">About</a><a href="#find-us">Find Us</a></nav>
-        <a className="logo-link" href="#shop" aria-label="Fur and Fab home"><img src="/fur-fab-logo.png" alt="Fur and Fab" /></a>
-        <div className="header-actions"><a href="#influencers">Petfluencers</a><button aria-label="Search"><Icon name="search" /></button><button aria-label="Account"><Icon name="user" /></button><button className="cart-button" aria-label="Shopping cart"><Icon name="cart" /><span>{cartCount}</span></button></div>
-      </header>
+      <div className="container">
+        <div className="offer-bar"><Icon name="paw" /> Limited Time Offer: Get 10% off on your first order! <Icon name="paw" /></div>
+        <header className="site-header">
+          <button className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle navigation menu">☰</button>
+          
+          <nav className={`nav-links left-nav ${mobileMenuOpen ? 'mobile-nav-open' : ''}`} aria-label="Main navigation">
+            <a href="#shop" className={page === 'shop' ? 'active-nav' : ''}>Shop</a>
+            <a href="#about" className={page === 'about' ? 'active-nav' : ''}>About</a>
+            <a href="#find-us">Find Us</a>
+            {/* Mobile menu includes right nav links when open */}
+            {mobileMenuOpen && (
+              <>
+                <a href="#petfluencers" className={page === 'petfluencers' ? 'active-nav' : ''}>Petfluencers</a>
+                <a href="#customise" className={page === 'customise' ? 'active-nav' : ''}>Customise</a>
+              </>
+            )}
+          </nav>
 
-      {page === 'shop' ? <>
-      <section className="product-layout" id="shop">
-        <div className="product-visual" aria-label="Product image carousel">
-          {slides.map((slide, index) => <img key={slide.image} className={`slide-image ${index === activeSlide ? 'is-active' : ''}`} src={slide.image} alt={slide.alt} />)}
-          <div className="visual-copy">{slides[activeSlide].caption}<span>♡</span></div>
-          <button className="carousel-arrow previous" onClick={() => setActiveSlide((activeSlide - 1 + slides.length) % slides.length)} aria-label="Previous product image">‹</button>
-          <button className="carousel-arrow next" onClick={() => setActiveSlide((activeSlide + 1) % slides.length)} aria-label="Next product image">›</button>
-          <div className="dots" aria-label="Product images">{slides.map((slide, index) => <button key={slide.alt} className={index === activeSlide ? 'active' : ''} onClick={() => setActiveSlide(index)} aria-label={`Image ${index + 1}`} />)}</div>
-        </div>
+          <a className="logo-link" href="#shop" aria-label="Fur and Fab home"><img src="/fur-fab-logo.png" alt="Fur and Fab" /></a>
 
-        <div className="product-details">
-          <p className="eyebrow">FUR & FAB</p><h1>Pet Laundry Detergent</h1><h2>For Dogs & Cats</h2><p className="tagline">Gentle. Effective. Plant Based.</p>
-          <div className="packaging-claims"><span><strong>15-day</strong> pet odour protection</span><span><strong>1 kg</strong> | 50 washes</span><span><strong>Biodegradable</strong> packaging</span></div>
-          <div className="price-row"><del>₹499</del><strong>₹449</strong><span className="rating">★★★★★</span><a href="#reviews">(235 Reviews)</a></div>
-          <p className="description">A plant based fabric wash specially formulated for pet bedding, blankets, toys and everyday fabrics. Removes tough odour, keeps fabrics fresh and gentle for your furry friends.</p>
-          <div className="selectors"><div><label>Size</label><div className="size-options">{['500 g', '1 kg', '2 kg'].map((option) => <button key={option} className={size === option ? 'selected' : ''} onClick={() => setSize(option)}>{option}</button>)}</div></div><div><label>Quantity</label><div className="quantity"><button onClick={() => setQuantity(Math.max(1, quantity - 1))} aria-label="Decrease quantity">−</button><span>{quantity}</span><button onClick={() => setQuantity(quantity + 1)} aria-label="Increase quantity">+</button></div></div></div>
-          <button className="add-button" onClick={() => setCartCount(cartCount + quantity)}><Icon name="cart" /> {cartCount ? 'ADDED TO CART' : 'ADD TO CART'}</button>
-          <label className="subscribe"><input type="checkbox" checked={subscribed} onChange={(event) => setSubscribed(event.target.checked)} /><span className="checkbox" /><span><b>Subscribe & Save 10%</b><small>Get regular deliveries and never run out!</small></span></label>
-          <div className="accordions">{productInfo.map(([title, copy], index) => <div className={`accordion ${openPanel === index ? 'is-open' : ''}`} key={title}><button onClick={() => setOpenPanel(openPanel === index ? null : index)} aria-expanded={openPanel === index}><span>{title}</span><b>+</b></button>{openPanel === index && <p>{copy}</p>}</div>)}</div>
-        </div>
-      </section>
+          <div className="header-actions">
+            <nav className="nav-links right-nav">
+              <a href="#petfluencers" className={page === 'petfluencers' ? 'active-nav' : ''}>Petfluencers</a>
+              <a href="#customise" className={page === 'customise' ? 'active-nav' : ''}>Customise</a>
+            </nav>
+            <div className="action-buttons">
+              <button aria-label="Search"><Icon name="search" /></button>
+              <button aria-label="Account"><Icon name="user" /></button>
+              <button className="cart-button" aria-label="Shopping cart" onClick={() => setCartCount(cartCount + 1)}><Icon name="cart" /><span>{cartCount}</span></button>
+            </div>
+          </div>
+        </header>
 
-      <section className="benefits"><div><strong>Plant based</strong><span>Kind to paws and planet</span></div><div><strong>Pet safe</strong><span>Made for daily use</span></div><div><strong>Odour care</strong><span>Fresh fabrics, naturally</span></div><div><strong>Free delivery</strong><span>On orders over ₹999</span></div></section>
-      </> : <section className="about-page" id="about">
-        <div className="about-hero"><p className="eyebrow">THE FUR&FAB PROMISE</p><h1>Everything that comforts your pet deserves a different kind of clean.</h1><p>For everything they wear, sleep on and cuddle.</p><a className="about-cta" href="#shop">Shop pet fabric wash <Icon name="arrow" /></a></div>
-        <div className="about-intro"><div><p className="eyebrow">WHY WE EXIST</p><h2>Because clean is part of care.</h2></div><p>You think about what goes in their bowl. You think about what touches their skin. You think about what they sleep on and what they cuddle. Fur&Fab brings that same care to the fabrics closest to them, with a specialist clean made for pet life.</p></div>
-        <div className="about-grid"><article className="usp-card"><span className="about-number">01</span><strong className="usp-stat">15 days</strong><h3>Pet odour protection</h3><p>Long-lasting freshness for the fabrics that stay closest to your pet.</p></article><article className="usp-card"><span className="about-number">02</span><strong className="usp-stat">50 washes</strong><h3>From one 1 kg pack</h3><p>A specialist clean made for their everyday clothes, beds, blankets and toys.</p></article><article className="usp-card"><span className="about-number">03</span><strong className="usp-stat">Biodegradable</strong><h3>Packaging</h3><p>Thoughtful care for your home, your pet and the world they explore together.</p></article></div>
-        <div className="about-feature"><img src={dogImage} alt="Fur and Fab dog shaped fabric wash bottle" /><div><p className="eyebrow">SPECIALIST BY DESIGN</p><h2>Clean the things that make them feel at home.</h2><p>Fur&Fab is a specialist fabric care ritual for the places, layers and little things your pet returns to every day. Thoughtful for your home. Gentle around your furry family.</p><a className="about-cta" href="#shop">Find your clean <Icon name="arrow" /></a></div></div>
-      </section>}
-      <footer className="site-footer" id="find-us">
-        <div className="footer-brand"><img src="/fur-fab-logo.png" alt="Fur and Fab" /><p>Cleaner fabrics. Happier pets.</p><div className="social-links"><a href="#instagram">Instagram</a><a href="#facebook">Facebook</a></div></div>
-        <div><h3>Explore</h3><a href="#shop">Shop</a><a href="#about">Our story</a><a href="#influencers">Petfluencers</a></div>
-        <div><h3>Help</h3><a href="#contact">Contact us</a><a href="#shipping">Shipping & returns</a><a href="#faq">FAQs</a></div>
-        <div className="newsletter"><h3>Stay in the pack</h3><p>Get pet care tips and 10% off your first order.</p><form onSubmit={(event) => { event.preventDefault(); setJoined(true) }}><input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email address" required aria-label="Email address" /><button aria-label="Subscribe"><Icon name="arrow" /></button></form>{joined && <small>You're on the list. Welcome to the pack!</small>}</div>
-        <div className="footer-bottom"><span>© 2026 Fur&Fab. All rights reserved.</span><span>Made for the messes that make memories.</span></div>
-      </footer>
+        {page === 'shop' && (
+          <>
+            <section className="product-layout" id="shop">
+              <div className="product-visual" aria-label="Product image carousel">
+                {slides.map((slide, index) => <img key={slide.image} className={`slide-image ${index === activeSlide ? 'is-active' : ''}`} src={slide.image} alt={slide.alt} />)}
+                <div className="visual-copy">{slides[activeSlide].caption}<span>♡</span></div>
+                <button className="carousel-arrow previous" onClick={() => setActiveSlide((activeSlide - 1 + slides.length) % slides.length)} aria-label="Previous product image">‹</button>
+                <button className="carousel-arrow next" onClick={() => setActiveSlide((activeSlide + 1) % slides.length)} aria-label="Next product image">›</button>
+                <div className="dots" aria-label="Product images">{slides.map((slide, index) => <button key={slide.alt} className={index === activeSlide ? 'active' : ''} onClick={() => setActiveSlide(index)} aria-label={`Image ${index + 1}`} />)}</div>
+              </div>
+
+              <div className="product-details">
+                <p className="eyebrow">FUR & FAB</p><h1>Pet Laundry Detergent</h1><h2>For Dogs & Cats</h2><p className="tagline">Gentle. Effective. Plant Based.</p>
+
+                <div className="price-row"><del>₹499</del><strong>₹449</strong><span className="rating">★★★★★</span><a href="#reviews">(235 Reviews)</a></div>
+                <p className="description">A plant based fabric wash specially formulated for pet bedding, blankets, toys and everyday fabrics. Removes tough odour, keeps fabrics fresh and gentle for your furry friends.</p>
+                <div className="selectors"><div><label>Size</label><div className="size-options">{['500 g', '1 kg', '2 kg'].map((option) => <button key={option} className={size === option ? 'selected' : ''} onClick={() => setSize(option)}>{option}</button>)}</div></div><div><label>Quantity</label><div className="quantity"><button onClick={() => setQuantity(Math.max(1, quantity - 1))} aria-label="Decrease quantity">−</button><span>{quantity}</span><button onClick={() => setQuantity(quantity + 1)} aria-label="Increase quantity">+</button></div></div></div>
+                <button className="add-button" onClick={() => setCartCount(cartCount + quantity)}><Icon name="cart" /> {cartCount ? 'ADDED TO CART' : 'ADD TO CART'}</button>
+                <label className="subscribe"><input type="checkbox" checked={subscribed} onChange={(event) => setSubscribed(event.target.checked)} /><span className="checkbox" /><span><b>Subscribe & Save 10%</b><small>Get regular deliveries and never run out!</small></span></label>
+                <div className="accordions">{productInfo.map(([title, copy], index) => <div className={`accordion ${openPanel === index ? 'is-open' : ''}`} key={title}><button onClick={() => setOpenPanel(openPanel === index ? null : index)} aria-expanded={openPanel === index}><span>{title}</span><b>+</b></button>{openPanel === index && <p>{copy}</p>}</div>)}</div>
+              </div>
+            </section>
+
+            <section className="benefits"><div><strong>Plant based</strong><span>Kind to paws and planet</span></div><div><strong>Pet safe</strong><span>Made for daily use</span></div><div><strong>Odour care</strong><span>Fresh fabrics, naturally</span></div><div><strong>Free delivery</strong><span>On orders over ₹999</span></div></section>
+          </>
+        )}
+
+        {page === 'about' && (
+          <section className="about-page" id="about">
+            <div className="about-hero"><p className="eyebrow">THE FUR&FAB PROMISE</p><h1>Everything that comforts your pet deserves a different kind of clean.</h1><p>For everything they wear, sleep on and cuddle.</p><a className="about-cta" href="#shop">Shop pet fabric wash <Icon name="arrow" /></a></div>
+            <div className="about-intro"><div><p className="eyebrow">WHY WE EXIST</p><h2>Because clean is part of care.</h2></div><p>You think about what goes in their bowl. You think about what touches their skin. You think about what they sleep on and what they cuddle. Fur&Fab brings that same care to the fabrics closest to them, with a specialist clean made for pet life.</p></div>
+            <div className="about-grid"><article className="usp-card"><span className="about-number">01</span><strong className="usp-stat">15 days</strong><h3>Pet odour protection</h3><p>Long-lasting freshness for the fabrics that stay closest to your pet.</p></article><article className="usp-card"><span className="about-number">02</span><strong className="usp-stat">50 washes</strong><h3>From one 1 kg pack</h3><p>A specialist clean made for their everyday clothes, beds, blankets and toys.</p></article><article className="usp-card"><span className="about-number">03</span><strong className="usp-stat">Biodegradable</strong><h3>Packaging</h3><p>Thoughtful care for your home, your pet and the world they explore together.</p></article></div>
+            <div className="about-feature"><img src={dogImage} alt="Fur and Fab dog shaped fabric wash bottle" /><div><p className="eyebrow">SPECIALIST BY DESIGN</p><h2>Clean the things that make them feel at home.</h2><p>Fur&Fab is a specialist fabric care ritual for the places, layers and little things your pet returns to every day. Thoughtful for your home. Gentle around your furry family.</p><a className="about-cta" href="#shop">Find your clean <Icon name="arrow" /></a></div></div>
+          </section>
+        )}
+
+        {page === 'petfluencers' && (
+          <section className="petfluencers-page" id="petfluencers">
+            <div className="petfluencers-hero">
+              <p className="eyebrow">OUR STARS</p>
+              <h1>Meet Our Petfluencers</h1>
+              <p>Discover real stories of pets whose lives and nap spots were transformed by Fur&Fab.</p>
+            </div>
+
+            <div className="pet-grid">
+              <div className="pet-card" onClick={() => setSelectedPet('coco')}>
+                <div className="pet-image-wrapper">
+                  <img src={cocoImage} alt="Coco Rottweiler" />
+                  <span className="badge">Featured Dog</span>
+                </div>
+                <div className="pet-info">
+                  <h3>Coco</h3>
+                  <p className="breed">Rottweiler (Indian Origin)</p>
+                  <button className="pet-detail-btn">View Coco's Story & Solution →</button>
+                </div>
+              </div>
+
+              <div className="pet-card" onClick={() => setSelectedPet('miko')}>
+                <div className="pet-image-wrapper">
+                  <img src={mikoImage} alt="Miko Persian Cat" />
+                  <span className="badge">Featured Cat</span>
+                </div>
+                <div className="pet-info">
+                  <h3>Miko</h3>
+                  <p className="breed">Persian Cat</p>
+                  <button className="pet-detail-btn">View Miko's Story & Solution →</button>
+                </div>
+              </div>
+            </div>
+
+            {selectedPet === 'coco' && (
+              <div className="pet-modal-overlay" onClick={() => setSelectedPet(null)}>
+                <div className="pet-modal" onClick={(e) => e.stopPropagation()}>
+                  <button className="close-modal" onClick={() => setSelectedPet(null)}>✕</button>
+                  <div className="modal-header">
+                    <img src={cocoImage} alt="Coco Rottweiler" />
+                    <div>
+                      <h2>1. Coco</h2>
+                      <p className="modal-breed">Breed: Rottweiler (Indian Origin)</p>
+                    </div>
+                  </div>
+                  <div className="modal-body">
+                    <div className="problem-box">
+                      <h4>⚠️ Coco's Challenges:</h4>
+                      <p>As a heavy-built Rottweiler living in a humid climate, Coco suffers from frequent skin itchiness on his belly and paws. His heavy bedding quickly trapped deep pet body odor, while harsh household laundry detergents left chemical residues that triggered allergic reactions.</p>
+                    </div>
+                    <div className="solution-box">
+                      <h4>✨ Why Fur&Fab Detergent Works for Coco:</h4>
+                      <p>Fur&Fab's 100% plant-based, toxin-free formula neutralizes tough Rottweiler odor at a molecular level without synthetic fragrances. It rinses 100% clean from heavy bedding, ensuring zero harsh chemical residue touches Coco's sensitive skin, leaving his favorite resting spots fresh and allergy-free for up to 15 days!</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedPet === 'miko' && (
+              <div className="pet-modal-overlay" onClick={() => setSelectedPet(null)}>
+                <div className="pet-modal" onClick={(e) => e.stopPropagation()}>
+                  <button className="close-modal" onClick={() => setSelectedPet(null)}>✕</button>
+                  <div className="modal-header">
+                    <img src={mikoImage} alt="Miko Persian Cat" />
+                    <div>
+                      <h2>2. Miko</h2>
+                      <p className="modal-breed">Breed: Persian Cat</p>
+                    </div>
+                  </div>
+                  <div className="modal-body">
+                    <div className="problem-box">
+                      <h4>⚠️ Miko's Challenges:</h4>
+                      <p>Miko has luxurious long coat fur that easily traps dust, dander, and hairballs into fleece blankets and cushions. Cats are extremely sensitive to synthetic essential oils and laundry toxins, which caused Miko to sneeze and avoid freshly washed blankets.</p>
+                    </div>
+                    <div className="solution-box">
+                      <h4>✨ Why Fur&Fab Detergent Works for Miko:</h4>
+                      <p>Fur&Fab is crafted with feline-safe, scent-safe plant cleaners that effortlessly lift cat dander and hair from plush fabrics. It leaves zero artificial scent, making blanket cuddle sessions 100% safe, cozy, and sneezing-free for Miko's sensitive respiratory system.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {page === 'customise' && (
+          <section className="customise-page" id="customise">
+            <div className="customise-hero">
+              <p className="eyebrow">TAILORED CARE</p>
+              <h1>Custom Pet Care Formulation</h1>
+              <p>Every pet is unique. Share your pet's specific breed, fabric sensitivities, or odor challenges, and our veterinary scientists will curate a customized wash recommendation!</p>
+            </div>
+
+            <div className="customise-container">
+              {!customiseSubmitted ? (
+                <form className="customise-form" onSubmit={handleCustomiseSubmit}>
+                  <h2>Pet Detail Form</h2>
+                  <p className="form-subtext">Fill in the information below to get expert-backed fabric care guidance.</p>
+
+                  <div className="form-group">
+                    <label htmlFor="petName">Pet's Name *</label>
+                    <input
+                      id="petName"
+                      type="text"
+                      placeholder="e.g. Bruno"
+                      value={customiseForm.petName}
+                      onChange={(e) => setCustomiseForm({ ...customiseForm, petName: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="petType">Pet Type *</label>
+                      <select
+                        id="petType"
+                        value={customiseForm.petType}
+                        onChange={(e) => setCustomiseForm({ ...customiseForm, petType: e.target.value })}
+                      >
+                        <option value="Dog">Dog 🐶</option>
+                        <option value="Cat">Cat 🐱</option>
+                        <option value="Other">Other Pet 🐾</option>
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="breed">Breed *</label>
+                      <input
+                        id="breed"
+                        type="text"
+                        placeholder="e.g. Golden Retriever, Persian Cat"
+                        value={customiseForm.breed}
+                        onChange={(e) => setCustomiseForm({ ...customiseForm, breed: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="issues">Specific Pet Issues & Fabric Sensitivities *</label>
+                    <textarea
+                      id="issues"
+                      rows="4"
+                      placeholder="Describe any skin allergies, heavy shedding, tough odor issues, blanket chewing, or fabric preferences..."
+                      value={customiseForm.issues}
+                      onChange={(e) => setCustomiseForm({ ...customiseForm, issues: e.target.value })}
+                      required
+                    ></textarea>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="ownerEmail">Your Email *</label>
+                      <input
+                        id="ownerEmail"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={customiseForm.ownerEmail}
+                        onChange={(e) => setCustomiseForm({ ...customiseForm, ownerEmail: e.target.value })}
+                        required
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="phone">Phone Number (Optional)</label>
+                      <input
+                        id="phone"
+                        type="tel"
+                        placeholder="+91 98765 43210"
+                        value={customiseForm.phone}
+                        onChange={(e) => setCustomiseForm({ ...customiseForm, phone: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <button type="submit" className="submit-btn">Submit Pet Request →</button>
+                </form>
+              ) : (
+                <div className="customise-success">
+                  <div className="success-icon">🐾</div>
+                  <h2>Request Submitted Successfully!</h2>
+                  <p>Thank you for submitting details for <strong>{customiseForm.petName || 'your pet'}</strong>.</p>
+                  <p className="success-message">
+                    Our team of veterinary doctors and formulation scientists will carefully analyze your pet's breed & fabric sensitivities. We will reach out to <strong>{customiseForm.ownerEmail}</strong> with a personalized detergent formulation & usage regimen within 24 hours!
+                  </p>
+                  <button className="reset-btn" onClick={() => setCustomiseSubmitted(false)}>Submit Another Request</button>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        <footer className="site-footer" id="find-us">
+          <div className="footer-brand"><img src="/fur-fab-logo.png" alt="Fur and Fab" /><p>Cleaner fabrics. Happier pets.</p><div className="social-links"><a href="#instagram">Instagram</a><a href="#facebook">Facebook</a></div></div>
+          <div><h3>Explore</h3><a href="#shop">Shop</a><a href="#about">Our story</a><a href="#petfluencers">Petfluencers</a><a href="#customise">Customise Care</a></div>
+          <div><h3>Help</h3><a href="#contact">Contact us</a><a href="#shipping">Shipping & returns</a><a href="#faq">FAQs</a></div>
+          <div className="newsletter"><h3>Stay in the pack</h3><p>Get pet care tips and 10% off your first order.</p><form onSubmit={(event) => { event.preventDefault(); setJoined(true) }}><input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email address" required aria-label="Email address" /><button aria-label="Subscribe"><Icon name="arrow" /></button></form>{joined && <small>You're on the list. Welcome to the pack!</small>}</div>
+          <div className="footer-bottom"><span>© 2026 Fur&Fab. All rights reserved.</span><span>Made for the messes that make memories.</span></div>
+        </footer>
+      </div>
     </main>
   )
 }
