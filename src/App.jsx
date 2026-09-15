@@ -248,103 +248,325 @@ function App() {
           <section className="customise-page" id="customise">
             <div className="customise-hero">
               <p className="eyebrow">TAILORED CARE</p>
-              <h1>Custom Pet Care Formulation</h1>
-              <p>Every pet is unique. Share your pet's specific breed, fabric sensitivities, or odor challenges, and our veterinary scientists will curate a customized wash recommendation!</p>
+              <h1>Fur&Fab Personalisation Quiz</h1>
+              <p>Answer a few quick questions about your pet, their coat, and laundry habits so our scientists can curate their custom fabric care regimen!</p>
             </div>
 
             <div className="customise-container">
               {!customiseSubmitted ? (
-                <form className="customise-form" onSubmit={handleCustomiseSubmit}>
-                  <h2>Pet Detail Form</h2>
-                  <p className="form-subtext">Fill in the information below to get expert-backed fabric care guidance.</p>
-
-                  <div className="form-group">
-                    <label htmlFor="petName">Pet's Name *</label>
-                    <input
-                      id="petName"
-                      type="text"
-                      placeholder="e.g. Bruno"
-                      value={customiseForm.petName}
-                      onChange={(e) => setCustomiseForm({ ...customiseForm, petName: e.target.value })}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="petType">Pet Type *</label>
-                      <select
-                        id="petType"
-                        value={customiseForm.petType}
-                        onChange={(e) => setCustomiseForm({ ...customiseForm, petType: e.target.value })}
-                      >
-                        <option value="Dog">Dog 🐶</option>
-                        <option value="Cat">Cat 🐱</option>
-                        <option value="Other">Other Pet 🐾</option>
-                      </select>
+                <div className="quiz-card">
+                  {/* Step Progress Bar */}
+                  <div className="quiz-progress-bar">
+                    <div className={`progress-step ${quizStep >= 1 ? 'active' : ''}`}>
+                      <span className="step-num">1</span>
+                      <span className="step-label">About Your Pet</span>
                     </div>
-
-                    <div className="form-group">
-                      <label htmlFor="breed">Breed *</label>
-                      <input
-                        id="breed"
-                        type="text"
-                        placeholder="e.g. Golden Retriever, Persian Cat"
-                        value={customiseForm.breed}
-                        onChange={(e) => setCustomiseForm({ ...customiseForm, breed: e.target.value })}
-                        required
-                      />
+                    <div className="progress-line"></div>
+                    <div className={`progress-step ${quizStep >= 2 ? 'active' : ''}`}>
+                      <span className="step-num">2</span>
+                      <span className="step-label">Cleaning Needs</span>
+                    </div>
+                    <div className="progress-line"></div>
+                    <div className={`progress-step ${quizStep >= 3 ? 'active' : ''}`}>
+                      <span className="step-num">3</span>
+                      <span className="step-label">Lifestyle & Laundry</span>
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="issues">Specific Pet Issues & Fabric Sensitivities *</label>
-                    <textarea
-                      id="issues"
-                      rows="4"
-                      placeholder="Describe any skin allergies, heavy shedding, tough odor issues, blanket chewing, or fabric preferences..."
-                      value={customiseForm.issues}
-                      onChange={(e) => setCustomiseForm({ ...customiseForm, issues: e.target.value })}
-                      required
-                    ></textarea>
-                  </div>
+                  {/* SECTION 1: ABOUT YOUR PET */}
+                  {quizStep === 1 && (
+                    <div className="quiz-section">
+                      <h2>1. 🐾 ABOUT YOUR PET</h2>
+                      <p className="section-subtext">Understanding the pet</p>
 
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="ownerEmail">Your Email *</label>
-                      <input
-                        id="ownerEmail"
-                        type="email"
-                        placeholder="you@example.com"
-                        value={customiseForm.ownerEmail}
-                        onChange={(e) => setCustomiseForm({ ...customiseForm, ownerEmail: e.target.value })}
-                        required
-                      />
+                      {/* Q1 */}
+                      <div className="quiz-group">
+                        <label className="quiz-question">Q1. What kind of pet do you have?</label>
+                        <div className="quiz-options-grid cols-3">
+                          {['Dog 🐶', 'Cat 🐱', 'Both 🐶🐱'].map((opt) => {
+                            const val = opt.split(' ')[0]
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                className={`option-btn ${quizForm.petKind === val ? 'selected' : ''}`}
+                                onClick={() => setQuizForm({ ...quizForm, petKind: val })}
+                              >
+                                {opt}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Q2 */}
+                      <div className="quiz-group">
+                        <label className="quiz-question">Q2. What is your pet’s breed and coat type?</label>
+                        <input
+                          type="text"
+                          className="quiz-text-input"
+                          placeholder="Enter breed (e.g. Golden Retriever, Persian Cat, Husky...)"
+                          value={quizForm.breed}
+                          onChange={(e) => setQuizForm({ ...quizForm, breed: e.target.value })}
+                        />
+                        <label className="quiz-sublabel">Select Coat Type:</label>
+                        <div className="quiz-options-grid cols-2">
+                          {[
+                            'Short & smooth coat',
+                            'Long & fine coat',
+                            'Thick / double coat',
+                            'Curly / woolly',
+                            'Very little / no fur'
+                          ].map((ct) => (
+                            <button
+                              key={ct}
+                              type="button"
+                              className={`option-btn ${quizForm.coatType === ct ? 'selected' : ''}`}
+                              onClick={() => setQuizForm({ ...quizForm, coatType: ct })}
+                            >
+                              {ct}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Q3 */}
+                      <div className="quiz-group">
+                        <label className="quiz-question">Q3. Does your pet have any allergies or sensitivities?</label>
+                        <div className="quiz-options-grid cols-2">
+                          {[
+                            'No',
+                            'Sensitive skin',
+                            'Fragrance sensitivity',
+                            'Known allergies',
+                            'Not sure'
+                          ].map((sens) => (
+                            <button
+                              key={sens}
+                              type="button"
+                              className={`option-btn ${quizForm.sensitivities === sens ? 'selected' : ''}`}
+                              onClick={() => setQuizForm({ ...quizForm, sensitivities: sens })}
+                            >
+                              {sens}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="quiz-nav-btns">
+                        <button type="button" className="next-btn" onClick={() => setQuizStep(2)}>Next: Cleaning Needs →</button>
+                      </div>
                     </div>
+                  )}
 
-                    <div className="form-group">
-                      <label htmlFor="phone">Phone Number (Optional)</label>
-                      <input
-                        id="phone"
-                        type="tel"
-                        placeholder="+91 98765 43210"
-                        value={customiseForm.phone}
-                        onChange={(e) => setCustomiseForm({ ...customiseForm, phone: e.target.value })}
-                      />
+                  {/* SECTION 2: THEIR CLEANING NEEDS */}
+                  {quizStep === 2 && (
+                    <div className="quiz-section">
+                      <h2>2. 🧼 THEIR CLEANING NEEDS</h2>
+                      <p className="section-subtext">Understanding what Fur&Fab needs to tackle</p>
+
+                      {/* Q4 */}
+                      <div className="quiz-group">
+                        <label className="quiz-question">Q4. What is your pet’s biggest laundry problem? <small>(Choose up to 2)</small></label>
+                        <div className="quiz-options-grid cols-2">
+                          {[
+                            '🐾 Fur / hair',
+                            '👃 Persistent odour',
+                            '💧 Urine / accidents',
+                            '🥣 Drool / food',
+                            '🌧️ Mud / dirt',
+                            '🧼 Stains',
+                            'No major problem'
+                          ].map((prob) => {
+                            const isSelected = quizForm.problems.includes(prob)
+                            return (
+                              <button
+                                key={prob}
+                                type="button"
+                                className={`option-btn ${isSelected ? 'selected' : ''}`}
+                                onClick={() => toggleProblem(prob)}
+                              >
+                                {isSelected ? '✓ ' : ''}{prob}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Q5 */}
+                      <div className="quiz-group">
+                        <label className="quiz-question">Q5. How dirty does your pet’s laundry usually get?</label>
+                        <div className="quiz-options-grid cols-1">
+                          {[
+                            'Light — mostly freshening',
+                            'Moderate — everyday dirt & fur',
+                            'Heavy — stains, mud & strong odour'
+                          ].map((dl) => (
+                            <button
+                              key={dl}
+                              type="button"
+                              className={`option-btn ${quizForm.dirtLevel === dl ? 'selected' : ''}`}
+                              onClick={() => setQuizForm({ ...quizForm, dirtLevel: dl })}
+                            >
+                              {dl}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Q6 */}
+                      <div className="quiz-group">
+                        <label className="quiz-question">Q6. How much does your pet shed?</label>
+                        <div className="quiz-options-grid cols-3">
+                          {['Low', 'Moderate', 'Heavy'].map((sh) => (
+                            <button
+                              key={sh}
+                              type="button"
+                              className={`option-btn ${quizForm.shedding === sh ? 'selected' : ''}`}
+                              onClick={() => setQuizForm({ ...quizForm, shedding: sh })}
+                            >
+                              {sh}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="quiz-nav-btns">
+                        <button type="button" className="prev-btn" onClick={() => setQuizStep(1)}>← Back</button>
+                        <button type="button" className="next-btn" onClick={() => setQuizStep(3)}>Next: Lifestyle & Laundry →</button>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  <button type="submit" className="submit-btn">Submit Pet Request →</button>
-                </form>
+                  {/* SECTION 3: THEIR LIFESTYLE & LAUNDRY */}
+                  {quizStep === 3 && (
+                    <form className="quiz-section" onSubmit={handleCustomiseSubmit}>
+                      <h2>3. 🏠 THEIR LIFESTYLE & LAUNDRY</h2>
+                      <p className="section-subtext">Understanding the fabrics and frequency</p>
+
+                      {/* Q7 */}
+                      <div className="quiz-group">
+                        <label className="quiz-question">Q7. What do you wash most often? <small>(Choose all that apply)</small></label>
+                        <div className="quiz-options-grid cols-2">
+                          {[
+                            'Beds & bedding',
+                            'Blankets',
+                            'Pet clothes',
+                            'Towels',
+                            'Soft toys',
+                            'Mats / crate bedding',
+                            'Sofa / cushion covers'
+                          ].map((fab) => {
+                            const isSelected = quizForm.fabrics.includes(fab)
+                            return (
+                              <button
+                                key={fab}
+                                type="button"
+                                className={`option-btn ${isSelected ? 'selected' : ''}`}
+                                onClick={() => toggleFabric(fab)}
+                              >
+                                {isSelected ? '✓ ' : ''}{fab}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Q8 */}
+                      <div className="quiz-group">
+                        <label className="quiz-question">Q8. What is your pet’s lifestyle?</label>
+                        <div className="quiz-options-grid cols-2">
+                          {[
+                            'Mostly indoors',
+                            'Indoor + outdoor',
+                            'Mostly outdoors',
+                            'Very active / frequently outdoors'
+                          ].map((ls) => (
+                            <button
+                              key={ls}
+                              type="button"
+                              className={`option-btn ${quizForm.lifestyle === ls ? 'selected' : ''}`}
+                              onClick={() => setQuizForm({ ...quizForm, lifestyle: ls })}
+                            >
+                              {ls}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Q9 */}
+                      <div className="quiz-group">
+                        <label className="quiz-question">Q9. How often do you wash their fabrics?</label>
+                        <div className="quiz-options-grid cols-2">
+                          {[
+                            '2–3 times a week',
+                            'Once a week',
+                            'Every 2 weeks',
+                            'Once a month / occasionally'
+                          ].map((freq) => (
+                            <button
+                              key={freq}
+                              type="button"
+                              className={`option-btn ${quizForm.washFrequency === freq ? 'selected' : ''}`}
+                              onClick={() => setQuizForm({ ...quizForm, washFrequency: freq })}
+                            >
+                              {freq}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Owner Info & Submit */}
+                      <div className="quiz-contact-box">
+                        <h3>Receive Your Tailored Formula & Wash Plan</h3>
+                        <div className="quiz-input-row">
+                          <input
+                            type="text"
+                            placeholder="Your Name *"
+                            className="quiz-text-input"
+                            value={quizForm.ownerName}
+                            onChange={(e) => setQuizForm({ ...quizForm, ownerName: e.target.value })}
+                            required
+                          />
+                          <input
+                            type="email"
+                            placeholder="Your Email Address *"
+                            className="quiz-text-input"
+                            value={quizForm.ownerEmail}
+                            onChange={(e) => setQuizForm({ ...quizForm, ownerEmail: e.target.value })}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="quiz-nav-btns">
+                        <button type="button" className="prev-btn" onClick={() => setQuizStep(2)}>← Back</button>
+                        <button type="submit" className="submit-btn">Get My Custom Regimen →</button>
+                      </div>
+                    </form>
+                  )}
+                </div>
               ) : (
                 <div className="customise-success">
-                  <div className="success-icon">🐾</div>
-                  <h2>Request Submitted Successfully!</h2>
-                  <p>Thank you for submitting details for <strong>{customiseForm.petName || 'your pet'}</strong>.</p>
+                  <div className="success-icon">✨ 🐾</div>
+                  <h2>Custom Regimen Ready for {quizForm.ownerName || 'Your Pet'}!</h2>
+                  <p className="success-sub">Tailored for your <strong>{quizForm.petKind}</strong> ({quizForm.breed || 'All Breeds'}, {quizForm.coatType})</p>
+
+                  <div className="regimen-summary-card">
+                    <h3>🧪 Formulated Product Profile:</h3>
+                    <ul>
+                      <li><strong>Target Problems:</strong> {quizForm.problems.join(', ') || 'General Pet Freshening'}</li>
+                      <li><strong>Sensitivity Care:</strong> {quizForm.sensitivities === 'No' ? '100% Plant-Based Hypoallergenic Formula' : `Specialized ${quizForm.sensitivities} Defense Formula`}</li>
+                      <li><strong>Wash Dosage:</strong> {quizForm.dirtLevel.includes('Heavy') ? '1.5 Scoops per load (High Dirt Blend)' : '1 Scoop per load (Standard Freshening)'}</li>
+                      <li><strong>Frequency Recommendation:</strong> Wash {quizForm.fabrics.slice(0, 2).join(' & ')} {quizForm.washFrequency}</li>
+                    </ul>
+                  </div>
+
                   <p className="success-message">
-                    Our team of veterinary doctors and formulation scientists will carefully analyze your pet's breed & fabric sensitivities. We will reach out to <strong>{customiseForm.ownerEmail}</strong> with a personalized detergent formulation & usage regimen within 24 hours!
+                    We've emailed your complete formulation breakdown and wash schedule to <strong>{quizForm.ownerEmail}</strong>. Our veterinary formulation team is reviewing your inputs!
                   </p>
-                  <button className="reset-btn" onClick={() => setCustomiseSubmitted(false)}>Submit Another Request</button>
+
+                  <button className="reset-btn" onClick={() => { setCustomiseSubmitted(false); setQuizStep(1); }}>Retake Quiz</button>
                 </div>
               )}
             </div>
