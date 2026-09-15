@@ -57,16 +57,45 @@ function App() {
   // Petfluencers modal/detail state
   const [selectedPet, setSelectedPet] = useState(null)
 
-  // Customise form state
-  const [customiseForm, setCustomiseForm] = useState({
-    petName: '',
-    petType: 'Dog',
+  // Quiz state
+  const [quizStep, setQuizStep] = useState(1)
+  const [quizForm, setQuizForm] = useState({
+    petKind: 'Dog',
     breed: '',
-    issues: '',
-    ownerEmail: '',
-    phone: ''
+    coatType: 'Short & smooth coat',
+    sensitivities: 'No',
+    problems: ['🐾 Fur / hair'],
+    dirtLevel: 'Moderate — everyday dirt & fur',
+    shedding: 'Moderate',
+    fabrics: ['Beds & bedding', 'Blankets'],
+    lifestyle: 'Indoor + outdoor',
+    washFrequency: 'Once a week',
+    ownerName: '',
+    ownerEmail: ''
   })
   const [customiseSubmitted, setCustomiseSubmitted] = useState(false)
+
+  const toggleProblem = (prob) => {
+    setQuizForm(prev => {
+      const exists = prev.problems.includes(prob)
+      if (exists) return { ...prev, problems: prev.problems.filter(p => p !== prob) }
+      if (prev.problems.length >= 2) return prev
+      return { ...prev, problems: [...prev.problems, prob] }
+    })
+  }
+
+  const toggleFabric = (fab) => {
+    setQuizForm(prev => {
+      const exists = prev.fabrics.includes(fab)
+      if (exists) return { ...prev, fabrics: prev.fabrics.filter(f => f !== fab) }
+      return { ...prev, fabrics: [...prev.fabrics, fab] }
+    })
+  }
+
+  const handleCustomiseSubmit = (e) => {
+    e.preventDefault()
+    setCustomiseSubmitted(true)
+  }
 
   useEffect(() => {
     const timer = window.setInterval(() => setActiveSlide((slide) => (slide + 1) % slides.length), 5000)
@@ -81,11 +110,6 @@ function App() {
       window.removeEventListener('hashchange', handleHashChange)
     }
   }, [])
-
-  const handleCustomiseSubmit = (e) => {
-    e.preventDefault()
-    setCustomiseSubmitted(true)
-  }
 
   return (
     <main className="storefront">
