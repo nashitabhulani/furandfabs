@@ -23,15 +23,29 @@ const productInfo = [
   ['Shipping & Returns', 'Free shipping on orders over Rs 999. Unopened products can be returned within 14 days.'],
 ]
 
-function Icon({ name }) {
+function Icon({ name, className = "icon" }) {
   const paths = {
     search: <><circle cx="11" cy="11" r="6.5" /><path d="m16 16 5 5" /></>,
     user: <><circle cx="12" cy="8" r="3.5" /><path d="M5 21a7 7 0 0 1 14 0" /></>,
     cart: <><path d="M3 4h2l2.1 11.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L20 8H6" /><circle cx="10" cy="20" r="1" /><circle cx="18" cy="20" r="1" /></>,
     paw: <><path d="M8.2 10.7c-1.9.3-3.8-.9-3.9-2.8-.1-1.6 1-2.8 2.3-2.9 1.5-.1 2.5 1.2 2.8 2.7M15.8 10.7c1.9.3 3.8-.9 3.9-2.8.1-1.6-1-2.8-2.3-2.9-1.5-.1-2.5 1.2-2.8 2.7M9.4 13.5c-1.3-1.2-3.7-.9-4.4.9-.7 1.8.6 3.2 2.3 3.2 1.3 0 2.1-.7 2.7-.7s1.4.7 2 .7c.6 0 1.4-.7 2-.7s1.4.7 2.7.7c1.7 0 3-1.4 2.3-3.2-.7-1.8-3.1-2.1-4.4-.9-1.1 1-2.9 1-4 0Z" /></>,
     arrow: <><path d="M5 12h14M13 6l6 6-6 6" /></>,
+    dog: <><path d="M10 5.1C7.8 5 6 6.8 6 9v3l-2 1v3h2v4h3v-4h6v4h3v-5l2-1V9c0-2.2-1.8-4-4-3.9H10z" /><circle cx="9" cy="8" r="1.2" fill="currentColor" /></>,
+    cat: <><path d="M12 4L9 7H6c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2h-3l-3-3z" /><circle cx="9" cy="11" r="1" fill="currentColor" /><circle cx="15" cy="11" r="1" fill="currentColor" /></>,
+    both: <><path d="M8 5v14M16 5v14M4 12h16" /></>,
+    fur: <><path d="M12 2v20M7 7l5-5 5 5M7 17l5 5 5-5" /></>,
+    odour: <><path d="M7 18a4 4 0 0 1 0-8c2 0 3-2 3-3s-1-2-1-3M17 18a4 4 0 0 0 0-8c-2 0-3-2-3-3s1-2 1-3" /></>,
+    drool: <><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" /></>,
+    mud: <><path d="M17.5 19H5a3 3 0 0 1-.58-5.94A5 5 0 0 1 14 10h.5A3.5 3.5 0 0 1 17.5 19z" /></>,
+    stain: <><path d="m12 3 1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3Z" /></>,
+    warning: <><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3ZM12 9v4M12 17h.01" /></>,
+    sparkles: <><path d="m12 3 1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3Z" /></>,
+    check: <><polyline points="20 6 9 17 4 12" /></>,
+    home: <><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></>,
+    wash: <><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21v-5h5" /></>,
+    shield: <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></>
   }
-  return <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name] || paths.paw}</svg>
 }
 
 function App() {
@@ -229,11 +243,11 @@ function App() {
                   </div>
                   <div className="modal-body">
                     <div className="problem-box">
-                      <h4>⚠️ Coco's Challenges:</h4>
+                      <h4><Icon name="warning" /> Coco's Challenges:</h4>
                       <p>As a heavy-built Rottweiler living in a humid climate, Coco suffers from frequent skin itchiness on his belly and paws. His heavy bedding quickly trapped deep pet body odor, while harsh household laundry detergents left chemical residues that triggered allergic reactions.</p>
                     </div>
                     <div className="solution-box">
-                      <h4>✨ Why Fur&Fab Detergent Works for Coco:</h4>
+                      <h4><Icon name="sparkles" /> Why Fur&Fab Detergent Works for Coco:</h4>
                       <p>Fur&Fab's 100% plant-based, toxin-free formula neutralizes tough Rottweiler odor at a molecular level without synthetic fragrances. It rinses 100% clean from heavy bedding, ensuring zero harsh chemical residue touches Coco's sensitive skin, leaving his favorite resting spots fresh and allergy-free for up to 15 days!</p>
                     </div>
                   </div>
@@ -254,11 +268,11 @@ function App() {
                   </div>
                   <div className="modal-body">
                     <div className="problem-box">
-                      <h4>⚠️ Miko's Challenges:</h4>
+                      <h4><Icon name="warning" /> Miko's Challenges:</h4>
                       <p>Miko has luxurious long coat fur that easily traps dust, dander, and hairballs into fleece blankets and cushions. Cats are extremely sensitive to synthetic essential oils and laundry toxins, which caused Miko to sneeze and avoid freshly washed blankets.</p>
                     </div>
                     <div className="solution-box">
-                      <h4>✨ Why Fur&Fab Detergent Works for Miko:</h4>
+                      <h4><Icon name="sparkles" /> Why Fur&Fab Detergent Works for Miko:</h4>
                       <p>Fur&Fab is crafted with feline-safe, scent-safe plant cleaners that effortlessly lift cat dander and hair from plush fabrics. It leaves zero artificial scent, making blanket cuddle sessions 100% safe, cozy, and sneezing-free for Miko's sensitive respiratory system.</p>
                     </div>
                   </div>
@@ -300,26 +314,27 @@ function App() {
                   {/* SECTION 1: ABOUT YOUR PET */}
                   {quizStep === 1 && (
                     <div className="quiz-section">
-                      <h2>1. 🐾 ABOUT YOUR PET</h2>
+                      <h2>1. ABOUT YOUR PET</h2>
                       <p className="section-subtext">Understanding the pet</p>
 
                       {/* Q1 */}
                       <div className="quiz-group">
                         <label className="quiz-question">Q1. What kind of pet do you have?</label>
                         <div className="quiz-options-grid cols-3">
-                          {['Dog 🐶', 'Cat 🐱', 'Both 🐶🐱'].map((opt) => {
-                            const val = opt.split(' ')[0]
-                            return (
-                              <button
-                                key={opt}
-                                type="button"
-                                className={`option-btn ${quizForm.petKind === val ? 'selected' : ''}`}
-                                onClick={() => setQuizForm({ ...quizForm, petKind: val })}
-                              >
-                                {opt}
-                              </button>
-                            )
-                          })}
+                          {[
+                            { key: 'Dog', label: 'Dog', icon: 'dog' },
+                            { key: 'Cat', label: 'Cat', icon: 'cat' },
+                            { key: 'Both', label: 'Both', icon: 'both' }
+                          ].map((item) => (
+                            <button
+                              key={item.key}
+                              type="button"
+                              className={`option-btn icon-option ${quizForm.petKind === item.key ? 'selected' : ''}`}
+                              onClick={() => setQuizForm({ ...quizForm, petKind: item.key })}
+                            >
+                              <Icon name={item.icon} className="btn-icon" /> {item.label}
+                            </button>
+                          ))}
                         </div>
                       </div>
 
@@ -386,7 +401,7 @@ function App() {
                   {/* SECTION 2: THEIR CLEANING NEEDS */}
                   {quizStep === 2 && (
                     <div className="quiz-section">
-                      <h2>2. 🧼 THEIR CLEANING NEEDS</h2>
+                      <h2>2. THEIR CLEANING NEEDS</h2>
                       <p className="section-subtext">Understanding what Fur&Fab needs to tackle</p>
 
                       {/* Q4 */}
@@ -394,23 +409,23 @@ function App() {
                         <label className="quiz-question">Q4. What is your pet’s biggest laundry problem? <small>(Choose up to 2)</small></label>
                         <div className="quiz-options-grid cols-2">
                           {[
-                            '🐾 Fur / hair',
-                            '👃 Persistent odour',
-                            '💧 Urine / accidents',
-                            '🥣 Drool / food',
-                            '🌧️ Mud / dirt',
-                            '🧼 Stains',
-                            'No major problem'
+                            { id: 'Fur / hair', label: 'Fur / hair', icon: 'fur' },
+                            { id: 'Persistent odour', label: 'Persistent odour', icon: 'odour' },
+                            { id: 'Urine / accidents', label: 'Urine / accidents', icon: 'drool' },
+                            { id: 'Drool / food', label: 'Drool / food', icon: 'drool' },
+                            { id: 'Mud / dirt', label: 'Mud / dirt', icon: 'mud' },
+                            { id: 'Stains', label: 'Stains', icon: 'stain' },
+                            { id: 'No major problem', label: 'No major problem', icon: 'check' }
                           ].map((prob) => {
-                            const isSelected = quizForm.problems.includes(prob)
+                            const isSelected = quizForm.problems.includes(prob.id)
                             return (
                               <button
-                                key={prob}
+                                key={prob.id}
                                 type="button"
-                                className={`option-btn ${isSelected ? 'selected' : ''}`}
-                                onClick={() => toggleProblem(prob)}
+                                className={`option-btn icon-option ${isSelected ? 'selected' : ''}`}
+                                onClick={() => toggleProblem(prob.id)}
                               >
-                                {isSelected ? '✓ ' : ''}{prob}
+                                <Icon name={prob.icon} className="btn-icon" /> {prob.label}
                               </button>
                             )
                           })}
@@ -465,7 +480,7 @@ function App() {
                   {/* SECTION 3: THEIR LIFESTYLE & LAUNDRY */}
                   {quizStep === 3 && (
                     <form className="quiz-section" onSubmit={handleCustomiseSubmit}>
-                      <h2>3. 🏠 THEIR LIFESTYLE & LAUNDRY</h2>
+                      <h2>3. THEIR LIFESTYLE & LAUNDRY</h2>
                       <p className="section-subtext">Understanding the fabrics and frequency</p>
 
                       {/* Q7 */}
@@ -572,12 +587,12 @@ function App() {
                 </div>
               ) : (
                 <div className="customise-success">
-                  <div className="success-icon">✨ 🐾</div>
+                  <div className="success-badge-icon"><Icon name="shield" className="shield-icon" /></div>
                   <h2>Custom Regimen Ready for {quizForm.ownerName || 'Your Pet'}!</h2>
                   <p className="success-sub">Tailored for your <strong>{quizForm.petKind}</strong> ({quizForm.breed || 'All Breeds'}, {quizForm.coatType})</p>
 
                   <div className="regimen-summary-card">
-                    <h3>🧪 Formulated Product Profile:</h3>
+                    <h3><Icon name="sparkles" /> Formulated Product Profile:</h3>
                     <ul>
                       <li><strong>Target Problems:</strong> {quizForm.problems.join(', ') || 'General Pet Freshening'}</li>
                       <li><strong>Sensitivity Care:</strong> {quizForm.sensitivities === 'No' ? '100% Plant-Based Hypoallergenic Formula' : `Specialized ${quizForm.sensitivities} Defense Formula`}</li>

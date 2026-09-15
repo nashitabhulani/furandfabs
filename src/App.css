@@ -616,6 +616,19 @@ body { background: #e6e5e0; }
   box-shadow: 0 2px 6px rgba(0,0,0,0.02);
 }
 
+.option-btn.icon-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--teal-dark);
+  flex-shrink: 0;
+}
+
 .option-btn:hover {
   border-color: var(--teal-dark);
   background: #f3f7f4;
@@ -628,6 +641,55 @@ body { background: #e6e5e0; }
   color: var(--teal-dark);
   box-shadow: 0 4px 12px rgba(40, 114, 123, 0.15);
   font-weight: 800;
+}
+
+.option-btn.selected .btn-icon {
+  color: var(--teal-dark);
+}
+
+.problem-box h4, .solution-box h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.problem-box h4 .icon {
+  width: 20px;
+  height: 20px;
+  color: #c0392b;
+}
+
+.solution-box h4 .icon {
+  width: 20px;
+  height: 20px;
+  color: var(--green-deep);
+}
+
+.success-badge-icon {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #e2ede5;
+  display: grid;
+  place-items: center;
+  color: var(--green-deep);
+}
+
+.shield-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.regimen-summary-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.regimen-summary-card h3 .icon {
+  width: 20px;
+  height: 20px;
 }
 
 /* Quiz Navigation Buttons */
